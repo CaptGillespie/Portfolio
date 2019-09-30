@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel= "stylesheet" type= "text/css" href= "static/styles/mainpage.css">
+    
+    <script src="http://threejs.org/build/three.min.js"></script>
+    <script src="http://threejs.org/examples/js/libs/tween.min.js"></script>
+    <script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/100/three.min.js"></script>
+
+    <title>Sean Gillespie's Portfolio</title>
+  </head>
+  <body>
+    <header>
+      <div class="collapse bg-dark" id="navbarHeader">
+        <div class="about_container">
+          
+            <div class="about_info">
+              <img class="headshot" src="static/img/headshot.png">
+              <h5 class="text-white">About</h5>
+              <p class="text-white">Hi, my name is Sean Gillespie. I'm a full stack developer with a penchant for Front-End design. I'm a recent graduate of Coding Dojo Seattle, and am seeking new opportunities in the web development world! Please don't hesitate to reach out to me if you have any questions, comments, or projects!</p>
+            </div>
+            
+            <div class="contact_info">
+              <h4 class="text-white">Contact</h4>
+              <ul class="list-unstyled">
+                <li><a href="https://github.com/CaptGillespie" target="_blank" class="text-white"><img id="sm_icon" src="static/img/Technologies/github.png">'Git' together on GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/sean-gillespie-1853a782/" target="_blank" class="text-white"><img id="sm_icon" src="static/img/Technologies/linkedin.png">'Link up' on LinkedIn</a></li>
+                <li><a href="https://www.facebook.com/sean.gillespie.52" target="_blank" class="text-white"><img id="sm_icon" src="static/img/Technologies/facebook.png">'Face me' on Facebook</a></li>
+                <li><a href="https://www.instagram.com/captaingillespie/" target="_blank" class="text-white"><img id="sm_icon" src="static/img/Technologies/instagram.png">'Instantly' on Instagram</a></li>
+                <li><a target="_top" href="mailto:sean.gillespie22@gmail.com?Subject=Collaboration" target="_blank" class="text-white"><img id="sm_icon" src="static/img/Technologies/email.png">Email Me Directly</a> 
+              </ul>
+            </div>
+          
+        </div>
+      </div>
+      <div class="navbar navbar-dark box-shadow">
+        <div class="container d-flex justify-content-between">
+          <a href="#" class="navbar-brand d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <strong>Sean Gillespie's Portfolio</strong>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+            <h5><img id="spin" src="static/img/spinBall.gif">Contact</h5>
+          </button>
+        </div>
+      </div>
+    </header>
+      
+      <div class="Outer-Container">
+    
+      <div id="threesome">
+          <script type="x-shader/x-vertex" id="vertexshader">
+            uniform float amplitude;
+            attribute vec3 displacement;
+            attribute vec3 customColor;
+            varying vec3 vColor;
+            void main() {
+                vec3 newPosition = position + amplitude * displacement;
+                vColor = customColor;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+            }
+        </script>
+
+        <script type="x-shader/x-fragment" id="fragmentshader">
+            uniform vec3 color;
+            uniform float opacity;
+            varying vec3 vColor;
+            void main() {
+                gl_FragColor = vec4( vColor * color, opacity );
+            }
+        </script>
+
+        <script type="module">
+            import * as THREE from "https://cdn.jsdelivr.net/npm/three@v0.108.0/build/three.module.js";
+            var renderer, scene, camera, stats;
+            var line, uniforms;
+            var loader = new THREE.FontLoader();
+            loader.load( "https://cdn.jsdelivr.net/npm/three@v0.108.0/examples/fonts/helvetiker_bold.typeface.json", function ( font ) {
+                init( font );
+                animate();
+            } );
+            function init( font ) {
+                camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+                camera.position.z = 800;
+                camera.position.y= -100;
+                scene = new THREE.Scene();
+                // scene.background = new THREE.Color( 0x050505 );
+                uniforms = {
+                    amplitude: { value: 5.0 },
+                    opacity: { value: 0.3 },
+                    color: { value: new THREE.Color( 0xffffff ) }
+                };
+                var shaderMaterial = new THREE.ShaderMaterial( {
+                    uniforms: uniforms,
+                    vertexShader: document.getElementById( 'vertexshader' ).textContent,
+                    fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+                    blending: THREE.AdditiveBlending,
+                    depthTest: false,
+                    transparent: true
+                } );
+                var geometry = new THREE.TextBufferGeometry( 'A Splash of Color', {
+                    font: font,
+                    size: 50,
+                    height: 15,
+                    curveSegments: 10,
+                    bevelThickness: 5,
+                    bevelSize: 1.5,
+                    bevelEnabled: true,
+                    bevelSegments: 10,
+                } );
+                geometry.center();
+                var count = geometry.attributes.position.count;
+                var displacement = new THREE.Float32BufferAttribute( count * 3, 3 );
+                geometry.addAttribute( 'displacement', displacement );
+                var customColor = new THREE.Float32BufferAttribute( count * 3, 3 );
+                geometry.addAttribute( 'customColor', customColor );
+                var color = new THREE.Color( 0xffffff );
+                for ( var i = 0, l = customColor.count; i < l; i ++ ) {
+                    color.setHSL( i / l, 0.5, 0.5 );
+                    color.toArray( customColor.array, i * customColor.itemSize );
+                }
+                line = new THREE.Line( geometry, shaderMaterial );
+                line.rotation.x = 0.2;
+                scene.add( line );
+                renderer = new THREE.WebGLRenderer( { alpha : true } );
+                renderer.setClearColor( 0x000000, 0 );
+                renderer.setPixelRatio( window.devicePixelRatio );
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                var container = document.getElementById( 'container' );
+                threesome.appendChild( renderer.domElement );
+                
+                //
+                window.addEventListener( 'resize', onWindowResize, true );
+            }
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight );
+            }
+            function animate() {
+                requestAnimationFrame( animate );
+                render();
+              
+            }
+            function render() {
+                var time = Date.now() * 0.001;
+                line.rotation.y = 0.25 * time;
+                uniforms.amplitude.value = Math.sin( 0.5 * time );
+                uniforms.color.value.offsetHSL( 0.0005, 0, 0 );
+                var attributes = line.geometry.attributes;
+                var array = attributes.displacement.array;
+                for ( var i = 0, l = array.length; i < l; i += 3 ) {
+                    array[ i ] += 0.3 * ( 0.5 - Math.random() );
+                    array[ i + 1 ] += 0.3 * ( 0.5 - Math.random() );
+                    array[ i + 2 ] += 0.3 * ( 0.5 - Math.random() );
+                }
+                attributes.displacement.needsUpdate = true;
+                renderer.render( scene, camera );
+            }
+        </script>
+          </script>
+          </canvas>
+    
+        </div>
+
+<div id="three">
+    <script type="module">
+        import * as THREE from "https://cdn.jsdelivr.net/npm/three@v0.108.0/build/three.module.js";
+        
+        import { OBJLoader } from "https://cdn.jsdelivr.net/npm/three@v0.108.0/examples/jsm/loaders/OBJLoader.js";
+        var three = document.getElementById('three');
+        var camera, scene, renderer,
+          light1, light2, light3, light4,
+          object;
+          var clock = new THREE.Clock();
+  init();
+  animate();
+  function init() {
+    camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 1000 );
+    camera.position.z = 190;
+    scene = new THREE.Scene();
+    //model
+    var loader = new OBJLoader();
+    loader.load( '/static/img/FlickerofLight2.obj', function ( obj ) {
+      object = obj;
+      object.scale.set( 15,75,5 );
+      object.position.y = - 0;
+      object.position.z = -30;
+      scene.add( object );
+    } );
+    var sphere = new THREE.SphereBufferGeometry( 1.5, 15, 12 );
+    //lights
+    light1 = new THREE.PointLight( 0xFFFFFF, 2, 50 );
+    light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ) );
+    scene.add( light1 );
+    light2 = new THREE.PointLight( 0xFFFFFF, 2, 50 );
+    light2.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ) );
+    scene.add( light2 );
+    light3 = new THREE.PointLight( 0xFFFFFF, 2, 50 );
+    light3.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ) );
+    scene.add( light3 );
+    light4 = new THREE.PointLight( 0xFFFFFF, 2, 50 );
+    light4.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ) );
+    scene.add( light4 );
+    //renderer
+    renderer = new THREE.WebGLRenderer( { alpha : true } );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setClearColor( 0x000000, 0 );
+    three.appendChild( renderer.domElement );
+    
+  }
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    
+  }
+  function animate() {
+    requestAnimationFrame( animate );
+    render();
+
+  }
+  function render() {
+    var time = Date.now() * 0.0005;
+    var delta = clock.getDelta();
+    // if ( object ) object.rotation.y -= 0.5 * delta;
+    light1.position.x = Math.sin( time * 0.7 ) * 30;
+    light1.position.y = Math.cos( time * 0.5 ) * 40;
+    light1.position.z = Math.cos( time * 0.3 ) * 30;
+    light2.position.x = Math.cos( time * 0.3 ) * 30;
+    light2.position.y = Math.sin( time * 0.5 ) * 40;
+    light2.position.z = Math.sin( time * 0.7 ) * 30;
+    light3.position.x = Math.sin( time * 0.7 ) * 30;
+    light3.position.y = Math.cos( time * 0.3 ) * 40;
+    light3.position.z = Math.sin( time * 0.5 ) * 30;
+    light4.position.x = Math.sin( time * 0.3 ) * 30;
+    light4.position.y = Math.cos( time * 0.7 ) * 40;
+    light4.position.z = Math.sin( time * 0.5 ) * 30;
+    renderer.render( scene, camera );
+  }
+</script>
+</canvas>
+</div>
+
+
+<div class="whispers">
+  <div class="audio">
+    <audio id="player" src="static/audio/AudioTest.mp3"></audio>
+    <h4 class="jumbotron-heading">Subtle Whis<button id="play" onclick="document.getElementById('player').play()"><img id = "play" src="static/img/Technologies/play.png"></button><button id="pause" onclick="document.getElementById('player').pause()"><img id = "pause" src="static/img/Technologies/pause.png"></button>rs</h4>
+  </div>
+</div>
+
+ <br>
+      <div class="tech_row">
+           <div class="single">
+                  <h5>Languages</h5>
+                  <img src="static/img/Technologies/html.png" title="HTML">
+                  <img src="static/img/Technologies/css.png" title="CSS">
+                  <img id="icon" src="static/img/Technologies/python.png" title="Python">
+                  <img id="icon" src="static/img/Technologies/cSharp.png" title="C#">
+                  <img src="static/img/Technologies/JavaScript.png" title="JavaScript">
+              </div>
+            <div class="single">
+              <h5>Front End</h5>
+              <img src="static/img/Technologies/angular.png" title="Angular">
+              <img src="static/img/Technologies/JavaScript.png" title="JavaScript">
+              <img src="static/img/Technologies/jquery.png" title="jQuery">
+              <img id="icon" src="static/img/Technologies/bootstrap.png" title="Bootstrap">
+              <img id="icon" src="static/img/Technologies/ajax.png" title="Ajax">
+              <img id="icon" src="static/img/Technologies/threejs.png" title="ThreeJS">
+            </div>
+             
+            <div class="single">
+                <h5>Frameworks</h5>
+                <img src="static/img/Technologies/ASP.NET.png" title="ASP.NET Core">
+                <img src="static/img/Technologies/django.png" title="Django">
+                <img src="static/img/Technologies/express.png" title="Express">
+                <img src="static/img/Technologies/flask.png" title="Flask">
+                <img src="static/img/Technologies/net_icon.png" title="Entity">
+                <img id="icon" src="static/img/Technologies/MEAN.png" title="MEAN">
+            </div>
+            <br>
+            <br>
+            <div class="single">
+                <h5>Back End</h5>
+              <img src="static/img/Technologies/git.png" title="GitHub">
+              <img id="icon" src="static/img/Technologies/mongodb.png" title="Mongo">
+              <img src="static/img/Technologies/mysql.png" title="MySql">
+              <img id="icon" src="static/img/Technologies/nodejs.png" title="NodeJS">
+              <img id="icon" src="static/img/Technologies/postman.png" title="NodeJS">
+            </div>
+            <div class="single">
+                <h5>Animations/Editing</h5>
+              <img id="icon" src="static/img/Technologies/unity.png" title="Unity">
+              <img id="icon" src="static/img/Technologies/fcp.png" title="Final Cut Pro">
+              <img id="icon" src="static/img/Technologies/lightroom.png" title="Lightroom">
+              <img id="icon" src="static/img/Technologies/gimp.png" title="Gimp">
+            </div>
+          </div>
+        
+            
+            <div class="container">
+              <br>
+              
+              <h2 id="headerTitles"><span class="red">Web Development Projects</span></h2>
+              <div class="row">
+                  <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                        <img class="card-img-top" src="static/img/trip1.png" alt="Card image alt">
+                        <div class="card-body">
+                          <p class="card-text">Trip Buddy! Itinerary planning app for multiple users. Built in Python, with Django, and MySql DB. </p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <div class="popup3" onclick="myFunction3()"><button class="btn btn-sm btn-outline-secondary"><span class="popuptext3" id="myPopup3"><img id="calendar" src="/static/img/trip1.png"><img id="calendar" src="/static/img/trip2.png"></span>Preview</span></button></div>
+                                <a href="https://github.com/CaptGillespie/TripBuddyPlanner/tree/master/beltrevenge" target="_blank"><button type="button" class="btn btn-sm btn-outline-secondary">View On Github</button></a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  
+                
+                <div class="col-md-4">
+                    <div class="card mb-4 box-shadow">
+                       <video class="card-img-top" id="robot" poster="static/img/robot.gif" controls>
+                            <source src="static/videos/Robot.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                      <div class="card-body">
+                        <p class="card-text">Customized and validated Login and Registration. Built with C#, .NET Core, and MySql Database.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div class="btn-group">
+                            <a href="https://github.com/CaptGillespie/Login_and_Registration" target="_blank"><button type="button" class="btn btn-sm btn-outline-secondary">View On Github</button></a>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('robot').play()">Play</button>
+
+                          </div>
+                          <small class="text-muted">0:16 mins</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                
+                  <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                        <img class="card-img-top" src="static/img/yoga.png" alt="Card image cap">
+                        <div class="card-body">
+                          <p class="card-text">A website for a  yoga teacher, built with HTML, CSS, and vanilla Javascript.</p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                              <a href="https://www.melissabordenyoga.com/" target="_blank"><button type="button" class="btn btn-sm btn-outline-secondary">Borden Yoga.com</button></a>
+                            </div>
+                           
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+              </div>
+              <br>
+              <br>
+
+              <!-- <h2 id="headerTitles"><span class="orange">Server-Side Designs</span></h2> -->
+                  <div id="short" class="row">
+                    <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                          <video class="card-img-top" poster="static/img/commerce1.png" controls>
+                            <source src="static/videos/CommerceWalkthrough.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>                            
+                        <div class="card-body">
+                          <p class="card-text">Product Inventory Manager App. Built with Angular front end, Express Framework, and Mongo Database, on a Node Server.</p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <div class="popup2" onclick="myFunction2()"><button class="btn btn-sm btn-outline-secondary"><span class="popuptext2" id="myPopup2"><img id="calendar" src="/static/img/commerce1.png"><img id="calendar" src="/static/img/commerce2.png"><img id="calendar" src="/static/img/commerce3.png"></span>Preview</span></button></div>
+                                <a href="https://github.com/CaptGillespie/MeanFinale" target="_blank"><button type="button" class="btn btn-sm btn-outline-secondary">View On Github</button></a>
+                                
+                            </div>
+                            <small class="text-muted">1:41 mins</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4 box-shadow">
+                          <img class="card-img-top" src="static/img/calendar2.png" alt="Card image cap">
+                          <div class="card-body">
+                            <p class="card-text">An app for organizing local events. Once logged in, you can see events around you, details, and who is orchestrating of them.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                <div class="popup" onclick="myFunction()"><button class="btn btn-sm btn-outline-secondary"><span class="popuptext" id="myPopup"><img id="calendar" src="/static/img/calendar1.png"><img id="calendar" src="/static/img/calendar2.png"><img id="calendar" src="/static/img/calendar3.png"></span>Preview</span></button></div>
+                                <a href="https://github.com/CaptGillespie/ActivityOrganizer" target="_blank"><button type="button" class="btn btn-sm btn-outline-secondary">View on Github</button></a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+                    <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                          <img class="card-img-top" src="static/img/restaurant1.png" alt="Card image alt">
+                          <div class="card-body">
+                          <p class="card-text">Mini-Yelp! Add restaurants for users to give stars, review, and leave comments! Angular on Node Server.</p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <div class="popup4" onclick="myFunction4()"><button class="btn btn-sm btn-outline-secondary"><span class="popuptext4" id="myPopup4"><img id="calendar" src="/static/img/restaurant1.png"><img id="calendar" src="/static/img/restaurant2.png"><img id="calendar" src="/static/img/restaurant3.png"></span>Preview</span></button></div>
+                              <a href="https://github.com/CaptGillespie/Restaurant_Ranker" target="_blank"><button type="button" class="btn btn-sm btn-outline-secondary">View On Github</button></a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <br>
+
+
+                  <h2 id="headerTitles"><span class="green">Unity Renderings</span></h2>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="card mb-4 box-shadow">
+                              <video class="card-img-top" id="leaf" poster="static/img/Tree.png" controls>
+                                  <source src="static/videos/Acorn.mp4" type="video/mp4">
+                                  Your browser does not support the video tag.
+                              </video>
+                          <div class="card-body">
+                            <p class="card-text">An intro animation for a company with a leaf shaped logo.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('leaf').play()">Play</button>
+                              </div>
+                              <small class="text-muted">0:27 mins</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="card mb-4 box-shadow">
+                          <video class="card-img-top" id="demon" poster="static/img/DemonGrab.png" controls>
+                            <source src="static/videos/DemonGame.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                          <div class="card-body">
+                            <p class="card-text">A demon hunting melee game.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('demon').play()">Play</button>
+                              </div>
+                              <small class="text-muted">1:07 mins</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                          <div class="card mb-4 box-shadow">
+                            <video class="card-img-top" id="desert" poster="static/img/SaharaScreen.png" controls>
+                              <source src="static/videos/Sahara2.mp4" type="video/mp4">
+                              Your browser does not support the video tag.
+                          </video>
+                            <div class="card-body">
+                              <p class="card-text">A fly-through of the Sahara Desert.</p>
+                              <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('desert').play()">Play</button>
+                                </div>
+                                <small class="text-muted">1:39 mins</small>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <br>
+                  
+          
+
+              <!-- <h2 id="headerTitles"><span class="blue">Videography | Photography Productions</span></h2>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                        <video class="card-img-top" id="myVideo" poster="static/img/SeaLion.jpg" controls>
+                          <source src="static/videos/Immersive.mp4" type="video/mp4">
+                          Your browser does not support the video tag.
+                      </video>
+                        <div class="card-body">
+                          <p class="card-text">A brief overview of my videography, animals, and locations.</p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                              <a href="https://www.youtube.com/watch?v=WL99Hfk1wPc"><button type="button" class="btn btn-sm btn-outline-secondary">View On Youtube</button></a>
+                              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                            </div>
+                            <small class="text-muted">4:32 mins</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                        <video class="card-img-top" id="myVideo" poster="static/img/Shark.jpg" controls>
+                          <source src="static/videos/Epic.mp4" type="video/mp4">
+                          Your browser does not support the video tag.
+                      </video>
+                        <div class="card-body">
+                          <p class="card-text">Highlights from my past experience as a shark diver in the Bahamas.</p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                              <a href="https://www.youtube.com/watch?v=_kRNtbyTs50&t=6s"><button type="button" class="btn btn-sm btn-outline-secondary">View On Youtube</button></a>
+                              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                            </div>
+                            <small class="text-muted">3:12 mins</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="card mb-4 box-shadow">
+                        <video class="card-img-top" id="myVideo" poster="static/img/Dolphin.jpg" controls>
+                          <source src="static/videos/SeaLife.mp4" type="video/mp4">
+                          Your browser does not support the video tag.
+                      </video>
+                        <div class="card-body">
+                          <p class="card-text">A formal production for an underwater camera developer team.</p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                              <a href="https://www.youtube.com/watch?v=qbMlX-3PqUk"><button type="button" class="btn btn-sm btn-outline-secondary">View On Youtube</button></a>
+                              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                            </div>
+                            <small class="text-muted">4:18 mins</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
+
+    </main>
+
+
+
+
+
+    <style>
+        body {
+        background-color: rgba(255, 255, 255, .1);
+        }
+        #blocker {
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+        }
+      </style>
+   import * as THREE from "https://cdn.jsdelivr.net/npm/three@v0.108.0/build/three.module.js";
+        
+   import { OBJLoader } from "https://cdn.jsdelivr.net/npm/three@v0.108.0/examples/jsm/loaders/OBJLoader.js";
+    <body>
+        <h2 id="headerTitles"><span class="blue">Videography | Photography Productions</span></h2>
+
+      <div id="cube"></div>
+      <div id="blocker"></div>
+      <script type="module">
+        import * as THREE from "https://cdn.jsdelivr.net/npm/three@v0.108.0/build/three.module.js";
+        import { TrackballControls } from "https://cdn.jsdelivr.net/npm/three@v0.108.0/examples/jsm/controls/TrackballControls.js";
+        import { CSS3DRenderer, CSS3DObject } from "https://cdn.jsdelivr.net/npm/three@v0.108.0/examples/jsm/renderers/CSS3DRenderer.js";
+        var camera, scene, renderer;
+        var controls;
+        var Element = function ( id, x, y, z, ry ) {
+          var div = document.createElement( 'div' );
+          div.style.width = '480px';
+          div.style.height = '360px';
+          div.style.backgroundColor = '#000';
+          var iframe = document.createElement( 'iframe' );
+          iframe.style.width = '480px';
+          iframe.style.height = '360px';
+          iframe.style.border = '0px';
+                  iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
+          div.appendChild( iframe );
+          var object = new CSS3DObject( div );
+          object.position.set( x, y, z );
+          object.rotation.y = ry;
+          return object;
+        };
+        init();
+        animate();
+        function init() {
+          var container = document.getElementById( 'container' );
+          camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
+          camera.position.set( 400, 350, 650 );
+          scene = new THREE.Scene();
+          renderer = new CSS3DRenderer();
+          renderer.setSize( window.innerWidth/1.2, window.innerHeight );
+          cube.appendChild( renderer.domElement );
+          var group = new THREE.Group();
+          group.add( new Element( '_kRNtbyTs50', 0, 0, 240, 0 ) );
+          group.add( new Element( 'mz_jFC9eYLE', 240, 0, 0, Math.PI / 2 ) );
+          group.add( new Element( 'WL99Hfk1wPc', 0, 0, - 240, Math.PI ) );
+          group.add( new Element( '3DnBULoBuQ0', - 240, 0, 0, - Math.PI / 2 ) );
+          scene.add( group );
+          controls = new TrackballControls( camera, renderer.domElement );
+          controls.rotateSpeed = 4;
+          controls.noZoom = true;
+          
+          window.addEventListener( 'resize', onWindowResize, false );
+                  
+          // Block iframe events when dragging camera
+          var blocker = document.getElementById( 'blocker' );
+          blocker.style.display = 'none';
+          controls.addEventListener( 'start', function () {
+            blocker.style.display = '';
+          } );
+          controls.addEventListener( 'end', function () {
+            blocker.style.display = 'none';
+          } );
+        }
+        function onWindowResize() {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize( window.innerWidth, window.innerHeight );
+        }
+        function animate() {
+          requestAnimationFrame( animate );
+          controls.update();
+          renderer.render( scene, camera );
+        }
+      </script>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="footer">
+          <a href="#">
+          <button id="variant" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+          <h5><img id="spin2" src="static/img/spinBall.gif"><span class="contact2"> Contact</span></h5>
+          </button></a>
+        
+            <a class="float-right" href="#"><span class="text-white">Back to top</span></span></a>
+      </div>
+  </div>
+              </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.4/holder.min.js" integrity="sha256-ifihHN6L/pNU1ZQikrAb7CnyMBvisKG3SUAab0F3kVU=" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+
+
+<script>
+    // When the user clicks on div, open the popup
+    function myFunction() {
+      var popup = document.getElementById("myPopup");
+      popup.classList.toggle("show");
+    }
+    function myFunction2() {
+      var popup = document.getElementById("myPopup2");
+      popup.classList.toggle("show");
+    }
+    function myFunction3() {
+      var popup = document.getElementById("myPopup3");
+      popup.classList.toggle("show");
+    }
+    function myFunction4() {
+      var popup = document.getElementById("myPopup4");
+      popup.classList.toggle("show");
+    }
+</script>
